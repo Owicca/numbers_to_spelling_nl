@@ -1,0 +1,77 @@
+/*GENERAL START*/
+.block {
+	display: block;
+	margin: 10px;
+}
+
+#app,
+#legend,
+#running,
+#description {
+	margin: 10px;
+	padding: 10px;
+	border: 1px solid grey;
+}
+/*GENERAL END*/
+
+#app {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	height: 90vh;
+}
+
+#app #running {
+	display: none;
+}
+#app #description {
+	display: block;
+}
+#app.running #running {
+	display: flex;
+	flex-direction: column;
+	align-content: center;
+}
+#app.running #description {
+	display: none;
+}
+
+#legend {
+	position: absolute;
+	left: 20px;
+	top: 20px;
+
+	overflow: hidden;
+	width: 50px;
+	height: 50px;
+
+	transition: all .1s;
+}
+#legend:hover {
+	overflow: initial;
+	width: 75vh;
+	height: 75vh;
+}
+#legend_content {
+	background-color: red;
+}
+
+#description input {
+	margin-left: 50%;
+	position: relative;
+	left: -30px;
+}
+
+#spelled_number {
+	opacity: 0;
+	transition: opacity .2s;
+}
+#spelled_number.show {
+	opacity: 1;
+}
+
+#skip {
+	float: right;
+}

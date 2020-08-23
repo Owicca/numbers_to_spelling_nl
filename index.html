@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+	<title>Numbers Course</title>
+	<link rel="stylesheet" type="text/css" href="./styles.css" />
+</head>
+<body>
+	<div id="app" class="running">
+		<div id="legend">
+			<p>Legend<hr></p>
+			<div id="legend_content">
+				<p>Legend</p>
+			</div>
+		</div>
+		<div id="running">
+			<p class="block" id="generated_number"><span>?</span></p>
+			<p class="block show" id="spelled_number"><span>?</span></p>
+			<label class="block" for="user_input">Spell the number shown above:</label>
+			<input class="block" type="text" name="user_input" id="user_input" />
+			<div class="block">
+				<input type="submit" id="check" value="Check">
+				<input type="submit" id="skip" value="Skip">
+			</div>
+		</div>
+		<div id="description">
+			<p>Spell the shown number</p>
+			<input type="submit" value="Start">
+		</div>
+	</div>
+	<script type="text/javascript" src="./scripts.js"></script>
+</body>
+</html>
