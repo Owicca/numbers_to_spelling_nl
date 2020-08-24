@@ -52,10 +52,7 @@
 #legend:hover {
 	overflow: initial;
 	width: 75vh;
-	height: 75vh;
-}
-#legend_content {
-	background-color: red;
+	height: 85vh;
 }
 
 #description input {

@@ -79,6 +79,7 @@ let Application = function (){
 let Translator = function() {
 	let self = this;
 
+	self.delimiter = " ";
 	self.numbers = {
 		0: "nul",
 		1: "een",
@@ -99,45 +100,40 @@ let Translator = function() {
 		1000000: "miljoen",
 	});
 	self.tens = function(number) {
+		// console.log(`Number in tens ${number}`);
 		switch(number) {
 			case "2":
-				return self.tens("twin");
+				return "twintig";
 			case "3":
-				return self.tens("der");
+				return "dertig";
 			case "4":
-				return self.tens("veer");
+				return "veertig";
 			case "8":
-				return self.tens("t" + self.numbers["8"]);
+				return "t" + self.numbers["8"] + "tig";
 			default:
-				return number + "tig";
+				return self.numbers[number] + "tig";
 		}
 	};
 	self.tenToTwenty = function(number) {
+		// console.log(`Number in tentoTwenty ${number}`);
+		let split = number.match(/\w/g);
 		switch(number) {	
 			case "11":
 				return "elf";
 			case "12":
 				return "twaalf";
 			case "13":
-				return self.tenToTwenty("der");
+				return "dertien";
 			case "14":
-				return self.tenToTwenty("veer");
+				return "veertien";
 			default:
-				return number + "tien";
+				return self.numbers[split[1]] + "tien";
 		}
 	};
 	self.compoundTen = function(group) {
+		// console.log(`Number group in compoundTen ${group`);
 		let split = group.match(/\w/g);
 		return self.numbers[split[1]] + "en" + self.tens(split[0]);
-	}
-	self.hundred = function(hundred) {
-		return self.numbers[hundred] + self.uniqueSpelling[100];
-	}
-	self.thousand = function(thousand) {
-		return self.numbers[thousand] + self.uniqueSpelling[1000];
-	}
-	self.million = function(million) {
-		return self.numbers[million] + self.uniqueSpelling[1000000];
 	}
 
 	self.spellNumber = function(number) {//write a fuzzer, check the 10 case
@@ -162,13 +158,13 @@ let Translator = function() {
 						let uniqueIndex = Math.pow(10, 3 + i - 1);
 						let multi = self.uniqueSpelling[uniqueIndex];
 						if(multi) {
-							spelled += multi;
+							spelled += self.delimiter + multi;
 							// console.log("added multi: ", multi);
 						}
 						// console.log("multi :", uniqueIndex , " ", multi)
 					}
 
-					spelled += " ";
+					spelled += self.delimiter;
 					// console.log("added separator");
 				}
 			}
@@ -179,8 +175,9 @@ let Translator = function() {
 	self.spellTwo = function(number_array) {
 		let spelled = "";
 
-		//console.log(`In spellTwo for: ${number_array} check ${number_array[1] > 0}`);
+		// console.log(`In spellTwo for: ${number_array} check ${number_array[1] > 0}`);
 		if(number_array[1] > 0) {
+			// console.log(`tentoTwenty ${number_array[0] == "1"} or compoundTen ${!(number_array[0] == "1")}`)
 			if (number_array[0] == "1") {
 				spelled += self.tenToTwenty(number_array.join(""));
 			} else {
@@ -196,21 +193,25 @@ let Translator = function() {
 		let spelled = "";
 
 		if(number_array.length == 3 && number_array[0] > 0) {
-			spelled += self.numbers[number_array[0]] + self.uniqueSpelling[100] + " ";
+			spelled += self.numbers[number_array[0]] + self.delimiter + self.uniqueSpelling[100];
 		}
-		//console.log(`For: ${number_array} check ${number_array[1] > 0}`);
+		// console.log(`For: ${number_array} check ${number_array[1] > 0}`);
 		if(number_array[1] > 0) {
-			spelled += " " + self.spellTwo(number_array.slice(1, 3));
+			spelled += self.delimiter + self.spellTwo(number_array.slice(1, 3));
 		} else if(number_array[2] > 0) {
-			spelled += " " + self.numbers[number_array[2]];
+			spelled += self.delimiter + self.numbers[number_array[2]];
 		} else if (number_array.length == 1) {
-			spelled += " " + self.numbers[number_array[0]];
+			spelled += self.delimiter + self.numbers[number_array[0]];
 		}
 
 		return spelled;
 	};
 
-	self.init = function() {};
+	self.init = function(options) {
+		for(let opt in options) {
+			self[opt] = options[opt];
+		}
+	};
 
 	return self;
 };
@@ -222,3 +223,15 @@ let options = {
 
 app = Application();
 app.init(options);
+
+function fuzzingTheResults(max) {
+	let tr = Translator();
+	for(let i = 0; i < max; i++) {
+		let str = tr.spellNumber(i);
+		let checker = str.match(/.*undefined.*/);
+		if(checker && checker.length) {
+			console.log(`Number ${i}: ${str}`);
+		}
+	}
+}
+// fuzzingTheResults(MAX_INT);
